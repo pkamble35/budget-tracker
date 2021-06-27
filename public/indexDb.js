@@ -15,6 +15,7 @@ var db;
   });
 })();
 
+//Save transaction to index db
 async function saveTransaction(newTransaction) {
   const trans = db.transaction("transactions", "readwrite");
   const transactions = trans.objectStore("transactions");
@@ -24,14 +25,16 @@ async function saveTransaction(newTransaction) {
 
   console.log(`Saving new record offline: ` + JSON.stringify(newTransaction));
 }
+
+//sync transaction from indexdb to server database
 async function syncToServer() {
   if (db) {
-    return new Promise((resolve,reject) =>{
+    return new Promise((resolve, reject) => {
       console.log('in db sync');
 
       var objectStore = db.transaction("transactions", "readonly").objectStore("transactions");
       var getObject = objectStore.getAll();
-      getObject.onsuccess = (e)=>{
+      getObject.onsuccess = (e) => {
         var data = e.target.result;
         console.log('data length', data.length);
         if (data.length) {
@@ -43,24 +46,24 @@ async function syncToServer() {
               Accept: "application/json, text/plain, */*",
               "Content-Type": "application/json"
             }
-          }).then(response => {    
+          }).then(response => {
             return response.json();
           })
-          .then(async (response) => {
-            var os = db.transaction("transactions", "readwrite").objectStore("transactions");
-            for (let ids of data) {
-              
-              await os.delete( ids.id);
-             
-            }
-            resolve();
-          });
-         
+            .then(async (response) => {
+              var os = db.transaction("transactions", "readwrite").objectStore("transactions");
+              for (let ids of data) {
+
+                await os.delete(ids.id);
+
+              }
+              resolve();
+            });
+
         }
       };
-     
+
     });
-    
+
   }
 }
 
