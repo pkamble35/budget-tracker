@@ -153,5 +153,3 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
-// listen for app coming back online
-window.addEventListener("offline", browserOffline());
