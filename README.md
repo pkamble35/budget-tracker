@@ -8,7 +8,6 @@ https://budget-tracker-011ert234.herokuapp.com/
 ==================================
 * [Installation](#Installation)
 * [Usage](#Usage)
-* [Endpoints](#Endpoints)
 * [License](#License)
 * [Contributing](#Contributing)
 * [Test](#Test)
