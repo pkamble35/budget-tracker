@@ -1,6 +1,7 @@
+
 let transactions = [];
 let myChart;
-import { useIndexedDb } from "./indexDb";
+
 
 fetch("/api/transaction")
   .then(response => {
@@ -137,7 +138,7 @@ function sendTransaction(isAdding) {
   })
   .catch(err => {
     // fetch failed, so save in indexed db
-    saveRecord(transaction);
+    saveTransaction(transaction);
 
     // clear form
     nameEl.value = "";
@@ -153,5 +154,4 @@ document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
 // listen for app coming back online
-window.addEventListener("online", useIndexedDb.browserOnline());
-window.addEventListener("offline", useIndexedDb.browserOffline());
+window.addEventListener("offline", browserOffline());

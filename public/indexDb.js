@@ -1,29 +1,32 @@
+var db;
 
-class IndexDb {
+async function saveTransaction(newTransaction) {
+  const trans = db.transaction("transactions", "readwrite");
+  const pendingTable = trans.objectStore("transactions");
+  pendingTable.add(newTransaction);
 
-  
-   useIndexedDb() {
-    return new Promise((resolve, reject) => {
-      const request = window.indexedDB.open('BudgetTracker', 1);
-      let db,
-        tx,
-        store;
-      request.onsuccess = function (e) {
-        console.log('db connected');
-        resolve();
-      };
-    });
-  }
-  browserOnline() {
-    syncOfflineToServer();
-  }
+  await trans.done;
 
-  browserOffline() {
-     this.useIndexedDb();
-  }
-
-
-
+  console.log(`Saving new record offline: ` + JSON.stringify(newTransaction));
 }
-export default new IndexDb;
 
+function useIndexedDb() {
+  return new Promise((resolve, reject) => {
+    const request = window.indexedDB.open('budget-tracker', 1);
+    request.onupgradeneeded = function(e) {
+      db = e.target.result;
+       db.createObjectStore("transactions", { keyPath: "id" , autoIncrement: true });
+    };
+
+    request.onsuccess = function (e) {
+      db = e.target.result;
+      console.log('db connected');
+      resolve();
+    };
+  });
+}
+
+
+function browserOffline() {
+  this.useIndexedDb();
+}
